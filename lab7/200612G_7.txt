@@ -1,0 +1,105 @@
+#include <iostream>
+using namespace std;
+
+struct node {
+  int key;
+  struct node *left, *right;
+};
+
+// Inorder traversal
+void traverseInOrder(struct node *root) {
+    // Base case
+  if (root == NULL)
+    return;
+  traverseInOrder(root->left);
+  cout << root->key << " ";   // Print current node
+  traverseInOrder(root->right);  // Traverse right subtree
+}
+
+// Insert a node
+struct node *insertNode(struct node *root, int key) {
+  if (root == NULL) {
+    struct node *newNode = new node;
+    newNode->key = key;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+  }
+  if (key < root->key)
+    root->left = insertNode(root->left, key);
+  else if (key > root->key)
+    root->right = insertNode(root->right, key);
+  return root;
+}
+
+// Helper function to find minimum value node in a subtree rooted at node
+struct node *minValueNode(struct node *node) {
+    // If tree is empty, create a new node and return it
+  struct node *current = node;
+  while (current->left != NULL)
+    current = current->left;
+  return current;
+}
+
+// Deleting a node
+struct node *deleteNode(struct node *root, int key) {
+      // Base case
+  if (root == NULL)
+    return root;
+     // If the key to be deleted is smaller than the root's key, then it lies in left subtree
+  if (key < root->key)
+    root->left = deleteNode(root->left, key);
+    // If the key to be deleted is greater than the root's key, then it lies in right subtree
+  else if (key > root->key)
+    root->right = deleteNode(root->right, key);
+    // If key is same as root's key, then This is the node to be deleted
+  else {
+      // node with only one child or no child
+    if (root->left == NULL) {
+      struct node *temp = root->right;
+      free(root);
+      return temp;
+    }
+    else if (root->right == NULL) {
+      struct node *temp = root->left;
+      free(root);
+      return temp;
+    }
+    // node with two children: Get the inorder successor (smallest in the right subtree)
+    struct node *temp = minValueNode(root->right);
+    // Copy the inorder successor's content to this node
+    root->key = temp->key;
+    // Delete the inorder successor
+    root->right = deleteNode(root->right, temp->key);
+  }
+  return root;
+}
+
+// Driver code
+int main() {
+  struct node *root = NULL;
+
+  int operation;
+  int operand;
+  cin >> operation;
+
+  while (operation != -1) {
+    switch(operation) {
+      case 1: // insert
+        cin >> operand;
+        root = insertNode(root, operand);
+        cin >> operation;
+        break;
+      case 2: // delete
+        cin >> operand;
+        root = deleteNode(root, operand);
+        cin >> operation;
+        break;
+      default:
+        cout << "Invalid Operator!\n";
+        return 0;
+    }
+  }
+  
+  traverseInOrder(root);
+}
