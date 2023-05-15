@@ -1,0 +1,99 @@
+#include <iostream>
+#include <chrono> // for measuring time
+using namespace std;
+using namespace std::chrono; // for measuring time
+
+
+class Node {
+public:
+    int data;
+    Node* next;
+    Node(int data) {
+        this->data = data;
+        next = nullptr;
+    }
+};
+
+class Stack {
+public:
+    Node* head;
+
+    Stack() {
+        head = nullptr;
+    }
+
+    void push(int data) {
+        Node* new_node = new Node(data);
+        new_node->next = head;
+        head = new_node;
+    }
+
+    int pop() {
+        if (head == nullptr) {
+            cout << "Stack is empty!" << endl;
+            return -1;
+        }
+        int popped_data = head->data;
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+        return popped_data;
+    }
+    
+    void display() {
+        if (head == nullptr) {
+            cout << "Stack is empty!" << endl;
+            return;
+        }
+        cout << "Stack: ";
+        Node* current = head;
+        while (current != nullptr) {
+            cout << current->data << " ";
+            current = current->next;
+        }
+        cout << endl;
+    }
+};
+
+    
+
+int main() {
+    Stack stack;
+    
+    auto start_display = high_resolution_clock::now();
+    
+    stack.push(8); //push
+    stack.push(10);
+    stack.push(5);
+    stack.push(11);
+    stack.push(15);
+    stack.push(23);
+    stack.push(6);
+    stack.push(18);
+    stack.push(20);
+    stack.push(17);
+    
+    stack.display(); //display
+    
+    stack.pop(); //pop
+    stack.pop();
+    stack.pop();
+    stack.pop();
+    stack.pop();
+    
+    stack.display();
+    
+    stack.push(4);
+    stack.push(30);
+    stack.push(3);
+    stack.push(1);
+    
+    stack.display();
+    
+    auto stop_display = high_resolution_clock::now();
+    auto duration_display = duration_cast<microseconds>(stop_display - start_display);
+    cout << "Execution time for LinkedList: " << duration_display.count() << " microseconds" << endl;
+
+    
+    return 0;
+}
